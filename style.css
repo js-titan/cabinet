@@ -1,37 +1,59 @@
+.container {
+    width: 70%;
+    margin: 0 auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+h1 {
+    margin-top: 0;
+}
+
 body {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0;
-    padding-top: 20px; /* Adjust as needed for spacing */
+    padding-top: 20px;
 }
 
 #inputContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 20px; /* Space between inputs and grid */
+    margin-bottom: 20px;
 }
 
 .inputField {
-    margin-bottom: 10px; /* Space between input fields */
+    margin-bottom: 10px;
+    text-align: left;
+    width: 100%;
+}
+
+.inputField:not(:last-child) {
+    margin-bottom: 10px;
 }
 
 #boxContainer {
     display: grid;
-    grid-template-columns: repeat(auto-fill, 50px);
-    grid-auto-rows: 50px;
+    grid-gap: 0;
+    /* grid-template-columns: repeat(auto-fill, 50px); */
+    /* grid-auto-rows: 50px; */
     gap: 0;
-    transform: rotate(90deg);
-    transform-origin: center center;
+    /* transform: rotate(90deg); */
+    /* transform-origin: center center; */
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
 }
 
 .box {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 50px;
-    height: 50px;
+    /* width: 50px; */
+    height: 80px;
     border: 1px solid black;
     position: relative;
 }
@@ -41,6 +63,79 @@ body {
     top: 0;
     left: 0;
     padding: 2px;
-    transform: rotate(-90deg); /* Counter-rotate the text to keep it upright */
-    transform-origin: 25px 25px; /* Center the origin for rotation */
+    /* transform: rotate(-90deg); */
+    /* transform-origin: 25px 25px; */
+}
+
+.line {
+    position: absolute;
+    bottom: -45px;
+    /* Start from the middle of the box */
+    left: 50%;
+    width: 2px;
+    /* Line thickness */
+    height: 80px;
+    /* Extend to the middle of the next box */
+    transform: translateX(-50%);
+}
+
+/* Add an arrow at the end of each line */
+.line::after {
+    content: "";
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 10px solid black;
+    position: absolute;
+    top: 5%;
+    right: calc(100% - 6px);
+    /* Adjust the offset */
+    transform: translateY(-50%) rotate(-90deg);
+}
+
+
+.dot {
+    position: absolute;
+    bottom: 0;
+    left: 30%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 15px;
+    background-color: black;
+    /* Dot color */
+}
+
+.connectLine {
+    position: absolute;
+    bottom: 10px;
+    left: 49%;
+    width: 2px;
+    height: 25px;
+}
+
+.connectLineAway {
+    position: absolute;
+    top: 45%;
+    right: -55%;
+    width: 2px;
+    height: 80px;
+    transform: rotate(65deg);
+    transform-origin: top center;
+}
+
+
+
+/* Add a small black circle to the center of each box */
+.box::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    background-color: transparent;
+    border: 3px solid black;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
