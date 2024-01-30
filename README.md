@@ -1,5 +1,21 @@
 # MicroLED Configuration Tool - README
 
+
+## File Descriptions
+
+### `index.html`
+
+This file serves as the entry point for the tool. It defines the structure of the web page, including the input fields for configuration parameters (such as the number of cabinets wide and tall, the number of cabinets per circuit, and the aspect ratio for boxes), and the container where the visual representation of the MicroLED configuration will be displayed.
+
+### `script.js`
+
+This JavaScript file contains the logic for reading user inputs, dynamically updating the visual representation of the LED cabinet configuration based on those inputs, and implementing interactive features of the tool. Key functions within `script.js` include `getRandomColor`, `getBoxWidth`, `populateGridAndAssignColors`, and `updateBoxes`.
+
+### `style.css`
+
+The CSS file is responsible for the visual styling of the web page. It defines the appearance of input fields, the grid layout for displaying the LED cabinet configuration, and other aesthetic elements such as colors, fonts, and spacing. The `style.css` file ensures that the tool is not only functional but also visually appealing and user-friendly.
+
+
 ## Overview
 
 The MicroLED Configuration Tool is designed to facilitate the visualization and layout of LED cabinet arrangements. It provides a dynamic interface for users to configure the number of cabinets horizontally and vertically, define the number of cabinets per circuit, and select an aspect ratio for the boxes. The tool then displays a visual representation of this configuration, using unique colors to differentiate between circuits.
