@@ -13,22 +13,22 @@
     <div class="container">
         <div id="inputContainer">
             <div class="inputField">
-                <label for="numCabinetsWide">Number of Cabinets Wide:</label>
+                <label class="input_label" for="numCabinetsWide">Number of Cabinets Wide:</label>
                 <input type="number" id="numCabinetsWide" min="1" oninput="updateBoxes()">
             </div>
             <div class="inputField">
-                <label for="numCabinetsTall">Number of Cabinets Tall:</label>
+                <label class="input_label" for="numCabinetsTall">Number of Cabinets Tall:</label>
                 <input type="number" id="numCabinetsTall" min="1" oninput="updateBoxes()">
             </div>
             <div class="inputField">
-                <label for="numCabinetsPerCircuit">Number of cabinets per circuit:</label>
+                <label class="input_label" for="numCabinetsPerCircuit">Number of cabinets per circuit:</label>
                 <input type="number" id="numCabinetsPerCircuit" value="1" oninput="updateBoxes()">
             </div>
             <div class="inputField">
-                <label for="boxAspectRatio">Box Aspect Ratio:</label>
+                <label class="input_label" for="boxAspectRatio">Box Aspect Ratio:</label>
                 <select id="boxAspectRatio" onchange="updateBoxes()">
-                    <option value="1:1">1:1</option>
                     <option value="16:9">16:9</option>
+                    <option value="1:1">1:1</option>
                     <option value="8:9">8:9</option>
                 </select>
             </div>

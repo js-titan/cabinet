@@ -7,48 +7,61 @@ function getRandomColor() {
     return color;
 }
 
+/* Function to calculate the box width based on the selected aspect ratio */
 function getBoxWidth(aspectRatio) {
-    // Function to calculate the box width based on the selected aspect ratio
     const [width, height] = aspectRatio.split(':').map(Number);
-    const aspectRatioWidth = (80 * width) / height; // Calculate width proportionally
+    /* Calculate width proportionally */
+    const aspectRatioWidth = (80 * width) / height;
     return `${aspectRatioWidth}px`;
 }
 
-function updateBoxes() {
-    const container = document.getElementById('boxContainer');
-    const numCabinetsWide = parseInt(document.getElementById('numCabinetsWide').value, 10) || 1; // Default to 1 if no value provided
-    const numCabinetsTall = parseInt(document.getElementById('numCabinetsTall').value, 10);
-    const numCabinetsPerCircuit = document.getElementById('numCabinetsPerCircuit').value ? parseInt(document.getElementById('numCabinetsPerCircuit').value, 10) : numCabinetsTall ? numCabinetsTall : 1;
-    const selectedAspectRatio = document.getElementById('boxAspectRatio').value; // Get the selected aspect ratio
-    container.innerHTML = ''; // Clear previous boxes
-    container.style.gridTemplateColumns = `repeat(${numCabinetsWide}, ${getBoxWidth(selectedAspectRatio)})`; // Set the CSS Grid layout with dynamic box width
-
+function populateGridAndAssignColors(numCabinetsWide, numCabinetsTall, numCabinetsPerCircuit) {
     const grid = Array.from({ length: numCabinetsWide }, () => new Array(numCabinetsTall));
-    let currentCircuitCount = 0; // Track the number of cabinets in the current circuit
     let currentColor = getRandomColor(); // Initialize the first circuit color
-    let columnColors = {}; // Mapping of column index to its line color
+    let columnColors = {};
+    let cumulativeCabinetCounter = 0; // Counter for cumulative cabinets to track complete circuits
+    let nextColorChangeAt = numCabinetsPerCircuit; // Next cumulative count at which to change color
 
-    // Before the loop, create an array to store dot colors for each column
-    const dotColors = Array.from({ length: numCabinetsWide }, () => getRandomColor());
-
-    // Populate the grid and prepare column colors
-    let totalCabinetsCount = 0;
     for (let col = 0; col < numCabinetsWide; col++) {
-        if (totalCabinetsCount % numCabinetsPerCircuit === 0) {
-            currentColor = getRandomColor(); // Assign a new color for a new circuit
-        }
-        columnColors[col] = currentColor; // Set the color for the current column
+        // Assign color at the start of the column
+        columnColors[col] = currentColor;
 
         for (let row = 0; row < numCabinetsTall; row++) {
             grid[col][row] = (col * numCabinetsTall) + row + 1;
-            totalCabinetsCount++;
-        }
+            cumulativeCabinetCounter++;
 
-        // Reset the circuit count if it reaches the specified number of cabinets per circuit
-        if (totalCabinetsCount >= numCabinetsPerCircuit) {
-            totalCabinetsCount %= numCabinetsPerCircuit;
+            // Change color after completing the circuit
+            if (cumulativeCabinetCounter == nextColorChangeAt) {
+                currentColor = getRandomColor(); // Assign a new color for the next circuit
+                nextColorChangeAt += numCabinetsPerCircuit; // Update the next color change point
+            }
         }
     }
+
+    return { grid, columnColors };
+}
+
+
+
+
+
+
+function updateBoxes() {
+    const container = document.getElementById('boxContainer');
+    const numCabinetsWide = parseInt(document.getElementById('numCabinetsWide').value, 10) || 1;
+    const numCabinetsTall = parseInt(document.getElementById('numCabinetsTall').value, 10);
+    const numCabinetsPerCircuit = document.getElementById('numCabinetsPerCircuit').value ? parseInt(document.getElementById('numCabinetsPerCircuit').value, 10) : numCabinetsTall ? numCabinetsTall : 1;
+    const selectedAspectRatio = document.getElementById('boxAspectRatio').value;
+    container.innerHTML = '';
+
+    /* Set the CSS Grid layout with dynamic box width */
+    container.style.gridTemplateColumns = `repeat(${numCabinetsWide}, ${getBoxWidth(selectedAspectRatio)})`;
+
+    /*  Before the loop, create an array to store dot colors for each column */
+    const dotColors = Array.from({ length: numCabinetsWide }, () => getRandomColor());
+
+    // Populate the grid and assign colors to columns
+    const { grid, columnColors } = populateGridAndAssignColors(numCabinetsWide, numCabinetsTall, numCabinetsPerCircuit);
 
     // Create boxes using the populated 2D array and assigned colors
     for (let row = 0; row < numCabinetsTall; row++) {
@@ -72,37 +85,44 @@ function updateBoxes() {
             }
 
             // Add a dot only to the first box in the column, accounting for reverse order
-            if (row == numCabinetsTall - 1) { // Condition to add dot to the visually first box
+            if (row == numCabinetsTall - 1) {
                 const dot = document.createElement('div');
                 dot.classList.add('dot');
 
-                // Check if the tall value is less than 3 and col is even
-                if (numCabinetsTall < 3 && col % 2 === 1) {
-                    if (col > 0) {
-                        dot.style.display = 'none'; // Hide the dot
-                        dot.style.backgroundColor = dotColors[col - 1]; // Hide the dot
+                /* Check if the tall value is less than 3 and col is even */
+                if (numCabinetsTall < 3 && col % 2 === 1 && numCabinetsPerCircuit % numCabinetsTall === 0 && numCabinetsPerCircuit !== numCabinetsTall) {
+                    if (col > 0 && numCabinetsPerCircuit % numCabinetsTall === 0 && numCabinetsPerCircuit !== numCabinetsTall) {
+                        /* Hide the dot */
+                        dot.style.display = 'none';
+                        dot.style.backgroundColor = dotColors[col - 1];
                     }
                 } else {
-                    dot.style.backgroundColor = columnColors[col]; // Set dot color based on column
-
-                    if (numCabinetsTall < 3) {
+                    /* Set dot color based on column */
+                    dot.style.backgroundColor = columnColors[col];
+                    if (numCabinetsTall < 3 && numCabinetsPerCircuit % numCabinetsTall === 0 && numCabinetsPerCircuit !== numCabinetsTall) {
                         if (dotColors[col + 1]) {
-                            // connect with first dot
+                            /* connect with first dot */
                             const connectLineAway = document.createElement('div');
                             connectLineAway.classList.add('connectLineAway');
                             connectLineAway.style.backgroundColor = columnColors[col];
+                            if (selectedAspectRatio === '16:9') {
+                                connectLineAway.style.height = "150px";
+                                connectLineAway.style.transform = "rotate(80deg)";
+                            }
                             box.appendChild(connectLineAway);
                         }
                     }
 
-                    // connect with first dot
+                    /* line to connect with base dot */
                     const connectLine = document.createElement('div');
                     connectLine.classList.add('connectLine');
-                    connectLine.style.backgroundColor = columnColors[col]; // Use the color mapped to this column
+                    /* Use the color mapped to this column */
+                    connectLine.style.backgroundColor = columnColors[col];
                     box.appendChild(connectLine);
                 }
 
-                dot.style.backgroundColor = columnColors[col]; // Set dot color based on column
+                /* Set dot color based on column */
+                dot.style.backgroundColor = columnColors[col];
                 box.appendChild(dot);
             }
         }
